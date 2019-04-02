@@ -1,0 +1,21 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T', crossorigin='anonymous')
+  body.p-3.mb-2.bg-dark.text-white
+    .container(align='center', style='margin-top:10%;')
+      h1.h1 REGISTRE
+      form.form-group(style='margin-left: 31%;margin-right: 31%;', action='/registrat')
+        p Usuari: 
+        input.form-control(type='text', name='usuari')
+        br
+        p Contrasenya: 
+        input.form-control(type='password', name='password')
+        br
+        br
+        input.btn.btn-outline-danger(type='submit', value='Desar')
+        br
+        br
+      a.btn.btn-link(href='/') Tens compte? Click aquí!

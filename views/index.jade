@@ -1,0 +1,31 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T', crossorigin='anonymous')
+  body.p-3.mb-2.bg-dark.text-white
+    .container(align='center', style='margin-top:10%;')
+      h1.h1
+        span(style='color:yellow;') P
+        span(style='color:orange;') I
+        span(style='color:gray;') N
+        span(style='color:red;') T
+        span(style='color:orange;') U
+        span(style='color:yellow;') R
+        span(style='color:cyan;') I
+        span(style='color:pink;') L
+        span(style='color:orange;') L
+        span(style='color:blue;') O
+      form.form-group(style='margin-left: 31%;margin-right: 31%;', action='/comprovat')
+        p Usuari: 
+        input.form-control(type='text', name='usuari')
+        br
+        p Contrasenya: 
+        input.form-control(type='password', name='password')
+        br
+        br
+        input.btn.btn-outline-danger(type='submit', value='A jugar!')
+        br
+        br
+      a.btn.btn-link(href='/registre') No tens compte?

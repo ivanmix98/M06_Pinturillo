@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Xat en temps real
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css', integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T', crossorigin='anonymous')
+    link(rel='stylesheet', href='style.css')
+    script(src='/xat.js')
+    script(src='/socket.io/socket.io.js')
+  body.p-3.mb-2.bg-dark.text-white
+    .container-fluid
+      .row
+        .col(style='border: solid 1px #999;')
+          | Jugadors
+          #llistajugadors
+        .col-6
+          canvas#canvas(width='700', height='450')
+          input#clean.btn.btn-light(style='margin-left: 2%;', type='button', value='Limpiar')
+          input#turno.btn.btn-light(style='margin-left: 2%;', type='button', value='Pasar')
+          #textoturno
+        .col
+          #contingut(style='width: 500px; height: 630px; margin: 0 0 20px 0; border: solid 1px #999; overflow-y: scroll;')
+          .controls
+            input#entrada(style='width:350px;')
+            input#enviar(type='button', value='enviar')
