@@ -1,10 +1,77 @@
+
+
 window.onload = function () {
 
     var missatges = [];
-    var socket = io.connect('http://172.20.20.160:3000');
+    var socket = io.connect('http://192.168.1.34:3000');
     var entrada = document.getElementById("entrada");
     var boto = document.getElementById("enviar");
     var contingut = document.getElementById("contingut");
+    var resultado = document.getElementById("resultado");
+    var tiempo = document.getElementById("tiempo");
+
+    var palabras = ['Linux', 'Pingu'];
+    var palabra = 'Linux';
+    var jugadors = [];
+    var n = 60;
+    
+    temporizador();
+
+    function temporizador() {
+
+        setInterval(function () {
+            tiempo.innerHTML = n;
+            if (n == 0) {
+                tiempo.innerHTML = "FIN DEL TIEMPO";
+            }
+            else { n--; }
+        }, 1000);
+
+    }
+    
+
+    var lastPlayerID = 0;
+    var players = {};
+
+    class Player {
+        constructor(id) {
+            this.id = id;
+        }
+    }
+    
+    
+    lastPlayerID++;
+    var newcommer = new Player({id: lastPlayerID});  
+       
+	players[lastPlayerID] = newcommer;
+
+	
+    
+    socket.emit('jugadors', lastPlayerID);
+    console.log(players);
+
+    var llistajugadors = document.getElementById("llistajugadors");
+
+    socket.on('jugadors2', function (data) {
+        console.log(data);
+
+        
+            jugadors = data;
+
+            var html = '';
+            for (var i = 0; i < jugadors.length; i++) {
+                
+                html += 'Jugador ' + jugadors[i] + '<br />';
+            }
+            llistajugadors.innerHTML = html;
+            console.log(jugadors);
+        
+
+       // else { console.log('Sala llena'); };
+
+
+    });
+
     canvasApp();
     socket.on('missatge', function (data) {
         if (data.missatge) {
@@ -19,32 +86,29 @@ window.onload = function () {
         }
     });
 
+
+
+
     boto.onclick = function () {
         var text = entrada.value;
         socket.emit('enviar', { missatge: text });
-    };
 
-    
-    var jugadors = [];
-    var llistajugadors = document.getElementById("llistajugadors");
-    socket.on('jugadors', function (data) {
-        console.log(data);
+        if (palabras.indexOf(entrada.value) === -1) {
+            console.log('Fallaste wey');
+            resultado.innerHTML = 'Fallaste wey';
+        }
+        else if (palabras.indexOf(entrada.value) > -1) {
+            console.log('Acertaste!!!');
+            resultado.innerHTML = 'Acertaste!!!';
 
-        if (data <= 5) {
-            jugadors.push(data);
-
-            var html = '';
-            for (var i = 0; i < jugadors.length; i++) {
-                html += 'Jugador ' + jugadors[i] + '<br />';
-            }
-            llistajugadors.innerHTML = html;
-            console.log(jugadors);
         }
 
-        else { console.log('Sala llena'); };
+
+    };
 
 
-    });
+
+  
 
     function canvasApp() {
 
@@ -58,6 +122,7 @@ window.onload = function () {
         function init() {
 
             var prueba = 1;
+
             clean();
             turno();
 
@@ -71,17 +136,20 @@ window.onload = function () {
                 context.fillStyle = "white";
                 context.fillRect(0, 0, theCanvas.width, theCanvas.height);
             }
-            
-            
-            function turno(){
-                
-                document.getElementById("textoturno").innerHTML = 'Turno del jugador ' + prueba;
-                    
-                    prueba++;
 
-                    if (prueba == 4){
-                        prueba = 1;
-                    }
+
+            function turno() {
+
+                document.getElementById("textoturno").innerHTML = 'Turno del jugador ' + prueba;
+
+
+                document.getElementById("palabra").innerHTML = 'Paraula a dibuixar: ' + palabra;
+
+                prueba++;
+
+                if (prueba == 4) {
+                    prueba = 1;
+                }
             }
 
             //Se inicia al trazo en las coordenadas indicadas.
@@ -100,20 +168,20 @@ window.onload = function () {
             function closeLine(e) {
                 context.closePath();
             }
-            
-            
+
+
             //Dibujamos el trazo recibiendo la posición actual del ratón.
             function draw(e) {
                 let bound = canvas.getBoundingClientRect();
                 let x = e.clientX - bound.left - canvas.clientLeft;
                 let y = e.clientY - bound.top - canvas.clientTop;
                 context.lineTo(x, y);
-                
-                
+
+
                 context.stroke();
 
             }
-        
+
             //Usamos la librería socket.io para comunicarnos con el servidor mediante websockets
             socket.on('connect', function () {
 
@@ -128,9 +196,9 @@ window.onload = function () {
 
                 buttonturno.addEventListener("click", function () {
 
-                    
-                        socket.emit('turno', true);
-                    
+
+                    socket.emit('turno', true);
+
 
                 }, false);
 

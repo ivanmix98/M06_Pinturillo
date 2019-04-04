@@ -102,6 +102,50 @@ app.get('/registre', function (req, res) {
   res.render("registre");
 });
 
+app.get('/ranking', function (req, res) {
+  var rutadb = 'mongodb://localhost:27017';
+  MongoClient.connect(rutadb, function (err, client) {
+  assert.equal(null, err);
+  console.log("Connexió correcta");
+  var db = client.db('pinturillo');
+  res.writeHead(200, {
+      "Content-Type": "text/html; charset=utf-8"
+          });
+          console.log("consulta document a col·lecció usuaris");
+
+          var cursor = db.collection('jugadors').find({});
+
+          res.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+          <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+          </head>
+          <body class="p-3 mb-2 bg-dark text-white">
+          <div class="container" align="center" style="margin-top:10%;">
+          <h1 class="h1">RANKING</h1>`);
+          cursor.each(function (err, doc) {
+              assert.equal(err, null);
+              if (doc != null) {
+                
+                res.write(doc.nom + ' ' + doc.password + ' ' + doc.puntuació + '<br>');
+              }
+              else {
+                res.end();
+                  client.close();
+              }
+          });
+          res.write(`
+          <a class="btn btn-link" href="/">Fes login</a>
+    </div>
+    </body>
+    </html>
+    `);
+      });
+});
+
 app.get('/registrat', function (req, res) {
   var rutadb = 'mongodb://localhost:27017';
   var user = req.query.usuari;
@@ -155,24 +199,15 @@ app.get('/pinturillo', function (req, res) {
 var io = require('socket.io').listen(app.listen(port));
 console.log("Listening on port " + port);
 
-var lastPlayerID = 0;
-var players = {};
 
-class Player {
-    constructor (id){
-        this.id = id;
-    }
-}
+var jugadors = [];
 
 io.sockets.on('connection', function (socket) {
-	lastPlayerID++;
-	var newcommer = new Player({id: lastPlayerID});      
-	players[lastPlayerID] = newcommer;
-	socket.player = newcommer; // or lastPlayerID
-	
-  console.log(lastPlayerID);
-  socket.broadcast.emit('jugadors', lastPlayerID);
-  console.log(players);
+ 
+  socket.on('jugadors', function (data) {
+    jugadors.push(data);
+    io.sockets.emit('jugadors2', jugadors);
+});
 
 	socket.emit('missatge', { missatge: 'Benvingut' });
 	socket.on('enviar', function (data) {
@@ -201,6 +236,6 @@ io.sockets.on('connection', function (socket) {
   socket.on('turno', function () {
 		console.log('Pasando el turno');
 		io.sockets.emit('turno', true);
-	});
+  });
 
 });
